@@ -143,7 +143,6 @@ def cifar_partition_by_grad_nogroup_bcl(partition_loader, model, criterion_ce, o
 
     affinity_matrix = (affinity_matrix + 1)
 
-    # 使用谱聚类进行划分
     n_groups = args.n_groups
     partition_results = spectral_clustering(affinity=affinity_matrix, n_clusters=n_groups, assign_labels='cluster_qr')
     new_groups = [[] for _ in range(n_groups)]
@@ -201,7 +200,6 @@ def imagenet_partition_by_grad_nogroup_bcl(partition_loader, model, criterion_ce
                 del reshaped_tensor
                 count = count + 1
 
-            # 将该batch中各类别的梯度向量及其样本数添加到dict中
             all_labels_grads_dict[label][0] += reshaped_vector_of_model
             all_labels_grads_dict[label][1] += label_count[label]
     all_labels_avg_grads_dict = {i:0 for i in range(n_labells)}
@@ -219,7 +217,6 @@ def imagenet_partition_by_grad_nogroup_bcl(partition_loader, model, criterion_ce
 
 
     affinity_matrix = (affinity_matrix + 1)
-    #使用谱聚类进行划分
     n_groups = args.n_groups
 
     partition_results = spectral_clustering(affinity=affinity_matrix,n_clusters=n_groups, assign_labels='cluster_qr')
@@ -241,7 +238,6 @@ def get_classified_data(param_dict):
     for i, ori_label in enumerate(targets):
         label = ori_label.item()
         if label not in label_lib:
-            # 在label列表中加入新的类别
             label_lib.append(label)
             label_dict.update({label: len(label_lib) - 1})
             label_count.update({label:1})
