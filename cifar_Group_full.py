@@ -1,12 +1,4 @@
 import os
-'''
-基于main.py
-在BCLcode的基础上，将cifar的dataloader放进来
-注意要看看NormLinear是否对output做了乘s=30!
-
-采用full softmax，不改变分类器，只对输出的logits按照group划分
-引入Group和MGDA，对输出logits进行划分
-'''
 
 os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 import torch
