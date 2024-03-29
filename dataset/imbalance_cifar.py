@@ -16,7 +16,7 @@ class IMBALANCECIFAR10(torchvision.datasets.CIFAR10):
         self.partition = partition
         self.train = train
         self.transform = transform
-        if self.select_class:#挑选类别
+        if self.select_class:
             self.selected_class = [7,8,9]
 
         self.gen_imbalanced_data(img_num_list)
@@ -44,16 +44,16 @@ class IMBALANCECIFAR10(torchvision.datasets.CIFAR10):
         classes = np.unique(targets_np)
         # np.random.shuffle(classes)
         self.num_per_cls_dict = dict()
-        # 用来记录生成的data list中各类别的样本的idx起止位置
+        
         self.classes_samples_pointers = {i: [] for i in range(self.cls_num)}
         start = 0
         for the_class, the_img_num in zip(classes, img_num_per_cls):
             self.num_per_cls_dict[the_class] = the_img_num
-            idx = np.where(targets_np == the_class)[0]  # 找出所有该类别的样本在原balanced数据集中的idx
-            np.random.shuffle(idx)  # 打乱
-            selec_idx = idx[:the_img_num]  # 取出相应数量的样本（unbalanced）
+            idx = np.where(targets_np == the_class)[0] 
+            np.random.shuffle(idx)  
+            selec_idx = idx[:the_img_num]  
             new_data.append(self.data[selec_idx, ...])
-            new_targets.extend([the_class, ] * the_img_num)#已经是有顺序的了
+            new_targets.extend([the_class, ] * the_img_num)
             end = len(new_targets) - 1
             self.classes_samples_pointers[the_class] = [start,end]
             start = end + 1
@@ -73,9 +73,6 @@ class IMBALANCECIFAR10(torchvision.datasets.CIFAR10):
         return cls_num_list
 
     def __getitem__(self, index):
-        '''
-        重载get_item(for BCL)
-        '''
         img, target = self.data[index], self.targets[index]
 
         # doing this so that it is consistent with all other datasets
