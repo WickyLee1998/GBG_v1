@@ -240,7 +240,7 @@ def main_worker(gpu, ngpus_per_node, args):
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=args.batch_size, shuffle=(train_sampler is None),
         num_workers=args.workers, pin_memory=True)
-    # 用来给划分group时用的loader
+
     partition_loader = torch.utils.data.DataLoader(
         partion_dataset, batch_size=220, shuffle=False,
         num_workers=args.workers, pin_memory=True)
@@ -339,8 +339,6 @@ def train(train_loader, model, criterion_ce, criterion_scl, optimizer, epoch, ar
         for g, group_g in enumerate(args.groups):
             if len(grouped_logits_list[g]) == 0:
                 continue
-
-            # todo 检查logits的shape！
             logits_g = grouped_logits_list[g]
             ce_loss_g = criterion_ce(logits_g, grouped_targets_list[g])
             optimizer.zero_grad()
@@ -614,7 +612,6 @@ def get_MGDA_weights(grads,args,loss_data):
         alpha, min_norm = MinNormSolver.find_min_norm_element(k)
 
     elif grad_cs == 'Adds':
-        # 对比：采用梯度直接求和
         if len(grads):
             alpha = [1.0 for _ in range(len(grads))]
         else:
